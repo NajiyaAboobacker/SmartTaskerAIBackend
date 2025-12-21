@@ -12,10 +12,15 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-// Routes
+// Health check route
+app.get("/", (req, res) => {
+  res.send("Server is running!");
+});
+
+// API routes
 app.use("/api/tasks", taskRoutes);
 
-// Connect MongoDB (no options needed in Mongoose 7+)
+// Connect MongoDB
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB connected"))
   .catch(err => console.log("MongoDB connection error:", err));
