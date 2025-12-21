@@ -15,11 +15,8 @@ app.use(bodyParser.json());
 // Routes
 app.use("/api/tasks", taskRoutes);
 
-// Connect MongoDB
-mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-})
+// Connect MongoDB (no options needed in Mongoose 7+)
+mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB connected"))
   .catch(err => console.log("MongoDB connection error:", err));
 
