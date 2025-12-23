@@ -2,29 +2,38 @@ import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-import bodyParser from "body-parser";
 import taskRoutes from "./routes/tasks.js";
 
 dotenv.config();
 const app = express();
 
-// Middleware
-app.use(cors());
-app.use(bodyParser.json());
+// CORS (FIXED)
+app.use(
+  cors({
+    origin: "https://smart-tasker-ai-frontend.vercel.app",
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true
+  })
+);
 
-// Health check route
+app.use(express.json());
+app.options("*", cors());
+
+// Health check
 app.get("/", (req, res) => {
   res.send("Server is running!");
 });
 
-// API routes
+// Routes
 app.use("/api/tasks", taskRoutes);
 
-// Connect MongoDB
-mongoose.connect(process.env.MONGO_URI)
+// MongoDB
+mongoose
+  .connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB connected"))
-  .catch(err => console.log("MongoDB connection error:", err));
+  .catch((err) => console.log("MongoDB connection error:", err));
 
-// Start server
-const PORT = process.env.PORT || 5000;
+// Server
+const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
