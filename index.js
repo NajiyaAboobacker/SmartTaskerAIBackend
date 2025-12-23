@@ -7,15 +7,17 @@ import taskRoutes from "./routes/tasks.js";
 dotenv.config();
 const app = express();
 
-// ✅ CORS (ENOUGH – no options "*")
+// ✅ VERY IMPORTANT: CORS FIRST
 app.use(
   cors({
     origin: "https://smart-tasker-ai-frontend.vercel.app",
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"]
   })
 );
 
+// ✅ Handle preflight explicitly
 app.use(express.json());
 
 // Health check
@@ -30,7 +32,7 @@ app.use("/api/tasks", taskRoutes);
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB connected"))
-  .catch((err) => console.log(err));
+  .catch(console.error);
 
 // Server
 const PORT = process.env.PORT || 8080;
